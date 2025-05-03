@@ -7,26 +7,46 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Введите логическую функцию: ");
-        String function = scanner.nextLine().trim();
 
-        Set<Character> variables = LogicFunctionParser.extractVariables(function);
-        List<TruthTableRow> table = TruthTableGenerator.generate(function, variables);
+        while (true) {
+            try {
+                System.out.print("Введите логическую функцию (или 'exit' для выхода): ");
+                String function = scanner.nextLine().trim();
 
+                if (function.equalsIgnoreCase("exit")) {
+                    break;
+                }
 
-        TruthTableGenerator.printTruthTable(table, variables);
+                Set<Character> variables = LogicFunctionParser.extractVariables(function);
+                List<TruthTableRow> table = TruthTableGenerator.generate(function, variables);
 
-        System.out.println("\nСовершенная дизъюнктивная нормальная форма (СДНФ):");
-        System.out.println(NormalFormsBuilder.buildSDNF(table, variables));
+                TruthTableGenerator.printTruthTable(table, variables);
 
-        System.out.println("\nСовершенная конъюнктивная нормальная форма (СКНФ):");
-        System.out.println(NormalFormsBuilder.buildSKNF(table, variables));
+                System.out.println("\nСовершенная дизъюнктивная нормальная форма (СДНФ):");
+                System.out.println(NormalFormsBuilder.buildSDNF(table, variables));
 
-        System.out.println("\nЧисловые формы:");
-        System.out.println(NormalFormsBuilder.buildNumericForm(table, true) + " - СДНФ");
-        System.out.println(NormalFormsBuilder.buildNumericForm(table, false) + " - СКНФ");
+                System.out.println("\nСовершенная конъюнктивная нормальная форма (СКНФ):");
+                System.out.println(NormalFormsBuilder.buildSKNF(table, variables));
 
-        System.out.println("\nИндексная форма:");
-        System.out.println(NormalFormsBuilder.buildIndexForm(table));
+                System.out.println("\nЧисловые формы:");
+                System.out.println(NormalFormsBuilder.buildNumericForm(table, true) + " - СДНФ");
+                System.out.println(NormalFormsBuilder.buildNumericForm(table, false) + " - СКНФ");
+
+                System.out.println("\nИндексная форма:");
+                System.out.println(NormalFormsBuilder.buildIndexForm(table));
+
+            } catch (IllegalArgumentException e) {
+                System.out.println("\nОшибка: " + e.getMessage());
+                System.out.println("Допустимые форматы ввода:");
+                System.out.println("- Простые выражения: a, b, !c");
+                System.out.println("- Логические операции: a & b, a | b, a -> b, a ~ b");
+                System.out.println("- Комбинации: (a | b) & c, !(a & b) -> c");
+                System.out.println("- Переменные должны быть от a до e");
+                System.out.println("Попробуйте снова.\n");
+            }
+        }
+
+        System.out.println("Программа завершена.");
+        scanner.close();
     }
 }

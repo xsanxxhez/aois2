@@ -1,6 +1,8 @@
 package by.ageenko.aois2;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TruthTableGenerator {
     public static List<TruthTableRow> generate(String expression, Set<Character> variables) {
@@ -21,6 +23,7 @@ public class TruthTableGenerator {
         return table;
     }
 
+
     private static boolean evaluate(String expression, Map<Character, Boolean> values) {
         String expr = expression.replace(" ", "")
                 .replace("&&", "&")
@@ -33,8 +36,54 @@ public class TruthTableGenerator {
                     entry.getValue() ? "1" : "0");
         }
 
-        return evaluateBooleanExpression(expr);
+        // Обработка сложных отрицаний
+        expr = expr.replace("!1", "0")
+                .replace("!0", "1");
+
+        // Обработка скобок
+        while (expr.contains("(")) {
+            expr = processParentheses(expr);
+        }
+
+        return evaluateSimple(expr);
     }
+
+    private static String processParentheses(String expr) {
+        // Используем Matcher для обработки скобок
+        Pattern pattern = Pattern.compile("\\(([^()]+)\\)");
+        Matcher matcher = pattern.matcher(expr);
+        StringBuffer result = new StringBuffer();
+
+        while (matcher.find()) {
+            String innerExpr = matcher.group(1);
+            boolean evalResult = evaluateSimple(innerExpr);
+            matcher.appendReplacement(result, evalResult ? "1" : "0");
+        }
+        matcher.appendTail(result);
+
+        return result.toString();
+    }
+
+    private static boolean evaluateSimple(String expr) {
+        // Упрощаем выражение шаг за шагом
+        String prev;
+        do {
+            prev = expr;
+            expr = expr.replace("!1", "0")
+                    .replace("!0", "1")
+                    .replace("1&1", "1").replace("1&0", "0")
+                    .replace("0&1", "0").replace("0&0", "0")
+                    .replace("1|1", "1").replace("1|0", "1")
+                    .replace("0|1", "1").replace("0|0", "0")
+                    .replace("1->1", "1").replace("1->0", "0")
+                    .replace("0->1", "1").replace("0->0", "1")
+                    .replace("1~1", "1").replace("1~0", "0")
+                    .replace("0~1", "0").replace("0~0", "1");
+        } while (!expr.equals(prev));
+
+        return expr.equals("1");
+    }
+
 
     private static boolean evaluateBooleanExpression(String expr) {
         expr = expr.replace("!1", "0")
