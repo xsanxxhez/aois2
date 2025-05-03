@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
 public class TruthTableGenerator {
     public static List<TruthTableRow> generate(String expression, Set<Character> variables) {
         List<TruthTableRow> table = new ArrayList<>();
