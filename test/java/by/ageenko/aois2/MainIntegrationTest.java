@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class MainIntegrationTest {
     @Test
     void main_SimpleExpression() {
-        String input = "a & b";
+        String input = "a & b\nexit\n";  // Добавляем 'exit' для завершения программы
         System.setIn(new ByteArrayInputStream(input.getBytes()));
 
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();

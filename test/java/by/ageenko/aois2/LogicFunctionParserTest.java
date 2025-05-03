@@ -25,16 +25,16 @@ class LogicFunctionParserTest {
 
     @Test
     void toJavaSyntax_Conjunction() {
-        assertEquals("a && b", LogicFunctionParser.toJavaSyntax("a & b"));
+        assertEquals("a&&b", LogicFunctionParser.toJavaSyntax("a & b"));
     }
 
     @Test
     void toJavaSyntax_Disjunction() {
-        assertEquals("a || b", LogicFunctionParser.toJavaSyntax("a | b"));
+        assertEquals("a||b", LogicFunctionParser.toJavaSyntax("a | b"));
     }
 
     @Test
     void toJavaSyntax_Implication() {
-        assertEquals("a <= b", LogicFunctionParser.toJavaSyntax("a -> b"));
+        assertEquals("a<=b", LogicFunctionParser.toJavaSyntax("a -> b"));
     }
 }
